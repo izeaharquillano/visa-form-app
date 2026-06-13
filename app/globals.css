@@ -177,6 +177,11 @@ body {
   font-size: 14px;
 }
 
+.required {
+  color: #d32f2f;
+  margin-left: 2px;
+}
+
 .field input[type="text"],
 .field input[type="date"],
 .field input[type="number"],
