@@ -6,7 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Stepper from "@/components/Stepper";
 import { useFormContext } from "@/lib/store";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 export default function Step4() {
   const router = useRouter();
@@ -21,8 +21,11 @@ export default function Step4() {
     try {
       const { applicant, passport, children, applicationInfo, visaHistory } = form;
 
+      const supabase = getSupabase();
+      const db = supabase as any;
+
       // 1. Insert applicant
-      const { data: appData, error: appErr } = await supabase
+      const { data: appData, error: appErr } = await db
         .from("applicant_information_t")
         .insert({
           surname: applicant.surname,
@@ -49,7 +52,7 @@ export default function Step4() {
 
       // 2. Insert passport
       if (passport.number) {
-        const { error: passErr } = await supabase
+          const { error: passErr } = await db
           .from("passport_information_t")
           .insert({
             applicant_id: applicantId,
@@ -63,7 +66,7 @@ export default function Step4() {
 
       // 3. Insert children + relationships
       for (const child of children) {
-        const { data: childData, error: childErr } = await supabase
+          const { data: childData, error: childErr } = await db
           .from("applicant_children_t")
           .insert({ child_name: child.name, child_age: Number(child.age) || null })
           .select("child_id")
@@ -71,7 +74,7 @@ export default function Step4() {
 
         if (childErr) throw childErr;
 
-        const { error: relErr } = await supabase
+          const { error: relErr } = await db
           .from("parent_child_relationship_t")
           .insert({
             child_id: childData.child_id,
@@ -84,7 +87,7 @@ export default function Step4() {
       // 4. Insert sponsor (skip for now — no sponsor form fields)
 
       // 5. Insert application info
-      const { data: applicationData, error: appInfoErr } = await supabase
+      const { data: applicationData, error: appInfoErr } = await db
         .from("application_information_t")
         .insert({
           applicant_id: applicantId,
@@ -103,7 +106,7 @@ export default function Step4() {
 
       // 6. Insert visa history
       if (visaHistory) {
-        const { error: visaErr } = await supabase
+          const { error: visaErr } = await db
           .from("visa_history_t")
           .insert({
             visa_num: `V${Date.now()}`,
