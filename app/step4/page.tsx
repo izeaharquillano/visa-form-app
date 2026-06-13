@@ -25,6 +25,15 @@ export default function Step4() {
       const db = supabase as any;
 
       const now = Math.floor(Date.now() / 1000);
+      const insertedIds: { table: string; idCol: string; id: number }[] = [];
+
+      const cleanup = async () => {
+        for (const row of insertedIds.reverse()) {
+          try {
+            await db.from(row.table).delete().eq(row.idCol, row.id);
+          } catch {}
+        }
+      };
 
       // 1. Insert applicant
       const { data: appData, error: appErr } = await db
@@ -50,8 +59,9 @@ export default function Step4() {
         .select("applicant_id")
         .single();
 
-      if (appErr) throw appErr;
+      if (appErr) { await cleanup(); throw appErr; }
       const applicantId = appData.applicant_id;
+      insertedIds.push({ table: "applicant_information_t", idCol: "applicant_id", id: applicantId });
 
       // 2. Insert passport
       if (passport.number) {
@@ -65,7 +75,8 @@ export default function Step4() {
             passport_expiry_date: passport.expiryDate || null,
             passport_issued_by: passport.issuedBy || null,
           });
-        if (passErr) throw passErr;
+        if (passErr) { await cleanup(); throw passErr; }
+        insertedIds.push({ table: "passport_information_t", idCol: "passport_id", id: now + 1 });
       }
 
       // 3. Insert children + relationships
@@ -77,7 +88,8 @@ export default function Step4() {
           .select("child_id")
           .single();
 
-        if (childErr) throw childErr;
+        if (childErr) { await cleanup(); throw childErr; }
+        insertedIds.push({ table: "applicant_children_t", idCol: "child_id", id: childData.child_id });
 
           const { error: relErr } = await db
           .from("parent_child_relationship_t")
@@ -86,7 +98,7 @@ export default function Step4() {
             applicant_id: applicantId,
             relationship_type: child.relationship,
           });
-        if (relErr) throw relErr;
+        if (relErr) { await cleanup(); throw relErr; }
       }
 
       // 4. Insert sponsor
@@ -102,8 +114,9 @@ export default function Step4() {
           })
           .select("sponsor_id")
           .single();
-        if (sponsorErr) throw sponsorErr;
+        if (sponsorErr) { await cleanup(); throw sponsorErr; }
         sponsorId = sponsorData.sponsor_id;
+        insertedIds.push({ table: "sponsor_information_t", idCol: "sponsor_id", id: sponsorId });
       }
 
       // 5. Insert application info
@@ -124,8 +137,9 @@ export default function Step4() {
         .select("application_id")
         .single();
 
-      if (appInfoErr) throw appInfoErr;
+      if (appInfoErr) { await cleanup(); throw appInfoErr; }
       const applicationId = applicationData.application_id;
+      insertedIds.push({ table: "application_information_t", idCol: "application_id", id: applicationId });
 
       // 6. Insert supporting documents
       for (let i = 0; i < documents.length; i++) {
@@ -136,7 +150,8 @@ export default function Step4() {
             application_id: applicationId,
             document_name: documents[i],
           });
-        if (docErr) throw docErr;
+        if (docErr) { await cleanup(); throw docErr; }
+        insertedIds.push({ table: "supporting_documents_t", idCol: "document_id", id: now + 200 + i });
       }
 
       // 7. Insert visa history
@@ -153,7 +168,7 @@ export default function Step4() {
             exit_date: visaHistory.exitDate || null,
             stay_duration: Number(visaHistory.stayDuration) || null,
           });
-        if (visaErr) throw visaErr;
+        if (visaErr) { await cleanup(); throw visaErr; }
       }
 
       resetForm();
