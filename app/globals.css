@@ -177,6 +177,13 @@ body {
   font-size: 14px;
 }
 
+.field input:disabled,
+.field select:disabled {
+  background: #f0f0f0;
+  color: #666;
+  cursor: not-allowed;
+}
+
 .required {
   color: #d32f2f;
   margin-left: 2px;

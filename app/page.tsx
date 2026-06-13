@@ -50,6 +50,8 @@ export default function Step1() {
     if (!required(applicant.father)) missing.push("Father's Name");
     if (!required(applicant.mother)) missing.push("Mother's Name");
     if (!applicant.civilStatus || applicant.civilStatus === "Select") missing.push("Civil Status");
+    if ((applicant.civilStatus === "Married" || applicant.civilStatus === "Widowed") && !required(applicant.spouse)) missing.push("Spouse Name");
+    if ((applicant.civilStatus === "Married" || applicant.civilStatus === "Widowed") && !required(applicant.spouseCitizenship)) missing.push("Spouse Citizenship");
     if (!required(passport.number)) missing.push("Passport Number");
     if (!required(passport.issuedDate)) missing.push("Passport Issued Date");
     if (!required(passport.expiryDate)) missing.push("Passport Expiry Date");
@@ -160,14 +162,18 @@ export default function Step1() {
               </select>
             </div>
             <div className="field">
-              <label>Spouse Name / 配偶姓名</label>
+              <label>Spouse Name / 配偶姓名
+                {(applicant.civilStatus === "Married" || applicant.civilStatus === "Widowed") && <span className="required">*</span>}
+              </label>
               <input type="text" value={applicant.spouse} onChange={(e) => update("spouse", e.target.value)} />
             </div>
           </div>
 
           <div className="form-row">
             <div className="field">
-              <label>Spouse Citizenship / 配偶公民权</label>
+              <label>Spouse Citizenship / 配偶公民权
+                {(applicant.civilStatus === "Married" || applicant.civilStatus === "Widowed") && <span className="required">*</span>}
+              </label>
               <input type="text" value={applicant.spouseCitizenship} onChange={(e) => update("spouseCitizenship", e.target.value)} />
             </div>
           </div>

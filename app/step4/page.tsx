@@ -19,15 +19,18 @@ export default function Step4() {
     setError("");
 
     try {
-      const { applicant, passport, children, applicationInfo, visaHistory } = form;
+      const { applicant, passport, children, applicationInfo, visaHistory, documents } = form;
 
       const supabase = getSupabase();
       const db = supabase as any;
+
+      const now = Date.now();
 
       // 1. Insert applicant
       const { data: appData, error: appErr } = await db
         .from("applicant_information_t")
         .insert({
+          applicant_id: now,
           surname: applicant.surname,
           firstname: applicant.firstname,
           sex: applicant.sex,
@@ -55,6 +58,7 @@ export default function Step4() {
           const { error: passErr } = await db
           .from("passport_information_t")
           .insert({
+            passport_id: now + 1,
             applicant_id: applicantId,
             passport_num: passport.number,
             passport_issued_date: passport.issuedDate || null,
@@ -65,10 +69,11 @@ export default function Step4() {
       }
 
       // 3. Insert children + relationships
-      for (const child of children) {
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i];
           const { data: childData, error: childErr } = await db
           .from("applicant_children_t")
-          .insert({ child_name: child.name, child_age: Number(child.age) || null })
+          .insert({ child_id: now + 10 + i, child_name: child.name, child_age: Number(child.age) || null })
           .select("child_id")
           .single();
 
@@ -90,6 +95,7 @@ export default function Step4() {
       const { data: applicationData, error: appInfoErr } = await db
         .from("application_information_t")
         .insert({
+          application_id: now + 100,
           applicant_id: applicantId,
           age_at_application: Number(applicationInfo.ageAtApplication) || null,
           port_of_entry: applicationInfo.portOfEntry,
@@ -103,13 +109,26 @@ export default function Step4() {
         .single();
 
       if (appInfoErr) throw appInfoErr;
+      const applicationId = applicationData.application_id;
 
-      // 6. Insert visa history
+      // 6. Insert supporting documents
+      for (let i = 0; i < documents.length; i++) {
+        const { error: docErr } = await db
+          .from("supporting_documents_t")
+          .insert({
+            document_id: now + 200 + i,
+            application_id: applicationId,
+            document_name: documents[i],
+          });
+        if (docErr) throw docErr;
+      }
+
+      // 7. Insert visa history
       if (visaHistory) {
           const { error: visaErr } = await db
           .from("visa_history_t")
           .insert({
-            visa_num: `V${Date.now()}`,
+            visa_num: `V${now.toString(36).toUpperCase().padStart(8, "0").slice(0, 8)}`,
             applicant_id: applicantId,
             visa_type: visaHistory.visaType,
             visa_issuing_officer: visaHistory.visaIssuedBy,
@@ -123,19 +142,19 @@ export default function Step4() {
 
       resetForm();
       router.push("/submit");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+    } catch (err: any) {
+      setError(err?.message || err?.details || "An error occurred");
       setSubmitting(false);
     }
   };
 
-  const { applicant, passport, children, applicationInfo, visaHistory } = form;
+  const { applicant, passport, children, applicationInfo, visaHistory, documents } = form;
 
   const Row = ({ label, value }: { label: string; value: string }) => (
     <div className="form-row">
       <div className="field">
         <label>{label}</label>
-        <input type="text" value={value} readOnly />
+        <input type="text" value={value} disabled />
       </div>
     </div>
   );
@@ -153,30 +172,30 @@ export default function Step4() {
         </div>
         <div className="form-content">
           <div className="form-row">
-            <div className="field"><label>Surname</label><input type="text" value={applicant.surname} readOnly /></div>
-            <div className="field"><label>First Name</label><input type="text" value={applicant.firstname} readOnly /></div>
+            <div className="field"><label>Surname</label><input type="text" value={applicant.surname} disabled /></div>
+            <div className="field"><label>First Name</label><input type="text" value={applicant.firstname} disabled /></div>
           </div>
           <div className="form-row">
-            <div className="field"><label>Sex</label><input type="text" value={applicant.sex} readOnly /></div>
-            <div className="field"><label>Birth Date</label><input type="text" value={applicant.birthdate} readOnly /></div>
+            <div className="field"><label>Sex</label><input type="text" value={applicant.sex} disabled /></div>
+            <div className="field"><label>Birth Date</label><input type="text" value={applicant.birthdate} disabled /></div>
           </div>
           <div className="form-row">
-            <div className="field"><label>Birth Place</label><input type="text" value={applicant.birthplace} readOnly /></div>
-            <div className="field"><label>Citizenship</label><input type="text" value={applicant.citizenship} readOnly /></div>
+            <div className="field"><label>Birth Place</label><input type="text" value={applicant.birthplace} disabled /></div>
+            <div className="field"><label>Citizenship</label><input type="text" value={applicant.citizenship} disabled /></div>
           </div>
-          <div className="field full-width"><label>Address</label><input type="text" value={applicant.address} readOnly /></div>
+          <div className="field full-width"><label>Address</label><input type="text" value={applicant.address} disabled /></div>
           <div className="form-row">
-            <div className="field"><label>Contact</label><input type="text" value={applicant.contact} readOnly /></div>
-            <div className="field"><label>Occupation</label><input type="text" value={applicant.occupation} readOnly /></div>
+            <div className="field"><label>Contact</label><input type="text" value={applicant.contact} disabled /></div>
+            <div className="field"><label>Occupation</label><input type="text" value={applicant.occupation} disabled /></div>
           </div>
-          <div className="field full-width"><label>Employment Address</label><input type="text" value={applicant.employmentAddress} readOnly /></div>
+          <div className="field full-width"><label>Employment Address</label><input type="text" value={applicant.employmentAddress} disabled /></div>
           <div className="form-row">
-            <div className="field"><label>Father</label><input type="text" value={applicant.father} readOnly /></div>
-            <div className="field"><label>Mother</label><input type="text" value={applicant.mother} readOnly /></div>
+            <div className="field"><label>Father</label><input type="text" value={applicant.father} disabled /></div>
+            <div className="field"><label>Mother</label><input type="text" value={applicant.mother} disabled /></div>
           </div>
           <div className="form-row">
-            <div className="field"><label>Civil Status</label><input type="text" value={applicant.civilStatus} readOnly /></div>
-            <div className="field"><label>Spouse</label><input type="text" value={applicant.spouse} readOnly /></div>
+            <div className="field"><label>Civil Status</label><input type="text" value={applicant.civilStatus} disabled /></div>
+            <div className="field"><label>Spouse</label><input type="text" value={applicant.spouse} disabled /></div>
           </div>
           <Row label="Spouse Citizenship" value={applicant.spouseCitizenship} />
         </div>
@@ -185,7 +204,7 @@ export default function Step4() {
       {/* Children Review */}
       <div className="children-section">
         <div className="section-title"><h2>Children</h2><p>孩子</p></div>
-        <div className="children-content">
+        <div className="children-content" style={{ padding: 0 }}>
           {children.length === 0 ? (
             <p>No children declared.</p>
           ) : (
@@ -193,10 +212,10 @@ export default function Step4() {
               <div className="child-card" key={i} style={{ marginBottom: 12 }}>
                 <div className="child-header"><span>Child #{i + 1}</span></div>
                 <div className="child-row">
-                  <div className="field"><label>Name</label><input type="text" value={child.name} readOnly /></div>
-                  <div className="field"><label>Age</label><input type="text" value={child.age} readOnly /></div>
+                  <div className="field"><label>Name</label><input type="text" value={child.name} disabled /></div>
+                  <div className="field"><label>Age</label><input type="text" value={child.age} disabled /></div>
                 </div>
-                <div className="field"><label>Relationship</label><input type="text" value={child.relationship} readOnly /></div>
+                <div className="field"><label>Relationship</label><input type="text" value={child.relationship} disabled /></div>
               </div>
             ))
           )}
@@ -208,12 +227,12 @@ export default function Step4() {
         <div className="section-title"><h2>Passport Information</h2><p>护照信息</p></div>
         <div className="form-content">
           <div className="form-row">
-            <div className="field"><label>Passport Number</label><input type="text" value={passport.number} readOnly /></div>
-            <div className="field"><label>Issued Date</label><input type="text" value={passport.issuedDate} readOnly /></div>
+            <div className="field"><label>Passport Number</label><input type="text" value={passport.number} disabled /></div>
+            <div className="field"><label>Issued Date</label><input type="text" value={passport.issuedDate} disabled /></div>
           </div>
           <div className="form-row">
-            <div className="field"><label>Expiry Date</label><input type="text" value={passport.expiryDate} readOnly /></div>
-            <div className="field"><label>Issued By</label><input type="text" value={passport.issuedBy} readOnly /></div>
+            <div className="field"><label>Expiry Date</label><input type="text" value={passport.expiryDate} disabled /></div>
+            <div className="field"><label>Issued By</label><input type="text" value={passport.issuedBy} disabled /></div>
           </div>
         </div>
       </div>
@@ -223,17 +242,17 @@ export default function Step4() {
         <div className="section-title"><h2>Application Information</h2><p>申请信息</p></div>
         <div className="form-content">
           <div className="form-row">
-            <div className="field"><label>Port of Entry</label><input type="text" value={applicationInfo.portOfEntry} readOnly /></div>
-            <div className="field"><label>Stay Length</label><input type="text" value={applicationInfo.stayLength} readOnly /></div>
+            <div className="field"><label>Port of Entry</label><input type="text" value={applicationInfo.portOfEntry} disabled /></div>
+            <div className="field"><label>Stay Length</label><input type="text" value={applicationInfo.stayLength} disabled /></div>
           </div>
           <div className="form-row">
-            <div className="field"><label>Entry Purpose</label><input type="text" value={applicationInfo.entryPurpose} readOnly /></div>
-            <div className="field"><label>Age at Application</label><input type="text" value={applicationInfo.ageAtApplication} readOnly /></div>
+            <div className="field"><label>Entry Purpose</label><input type="text" value={applicationInfo.entryPurpose} disabled /></div>
+            <div className="field"><label>Age at Application</label><input type="text" value={applicationInfo.ageAtApplication} disabled /></div>
           </div>
-          <div className="field full-width"><label>Companion</label><input type="text" value={applicationInfo.companionName} readOnly /></div>
-          <div className="field full-width"><label>Destination After PH</label><input type="text" value={applicationInfo.destinationAfterPH} readOnly /></div>
+          <div className="field full-width"><label>Companion</label><input type="text" value={applicationInfo.companionName} disabled /></div>
+          <div className="field full-width"><label>Destination After PH</label><input type="text" value={applicationInfo.destinationAfterPH} disabled /></div>
           <div className="checkbox-field">
-            <input type="checkbox" checked={!!visaHistory} readOnly disabled />
+            <input type="checkbox" checked={!!visaHistory} disabled />
             <label>Past visa application?</label>
           </div>
         </div>
@@ -245,20 +264,50 @@ export default function Step4() {
           <div className="section-title"><h2>Visa History</h2><p>签证记录</p></div>
           <div className="form-content">
             <div className="form-row">
-              <div className="field"><label>Visa Type</label><input type="text" value={visaHistory.visaType} readOnly /></div>
-              <div className="field"><label>Issued By</label><input type="text" value={visaHistory.visaIssuedBy} readOnly /></div>
+              <div className="field"><label>Visa Type</label><input type="text" value={visaHistory.visaType} disabled /></div>
+              <div className="field"><label>Issued By</label><input type="text" value={visaHistory.visaIssuedBy} disabled /></div>
             </div>
             <div className="form-row">
-              <div className="field"><label>Issued Date</label><input type="text" value={visaHistory.visaIssuedDate} readOnly /></div>
-              <div className="field"><label>Stay Duration</label><input type="text" value={visaHistory.stayDuration} readOnly /></div>
+              <div className="field"><label>Issued Date</label><input type="text" value={visaHistory.visaIssuedDate} disabled /></div>
+              <div className="field"><label>Stay Duration</label><input type="text" value={visaHistory.stayDuration} disabled /></div>
             </div>
             <div className="form-row">
-              <div className="field"><label>Entry Date</label><input type="text" value={visaHistory.entryDate} readOnly /></div>
-              <div className="field"><label>Exit Date</label><input type="text" value={visaHistory.exitDate} readOnly /></div>
+              <div className="field"><label>Entry Date</label><input type="text" value={visaHistory.entryDate} disabled /></div>
+              <div className="field"><label>Exit Date</label><input type="text" value={visaHistory.exitDate} disabled /></div>
             </div>
           </div>
         </div>
       )}
+
+      {/* Supporting Documents Review */}
+      <div className="supporting-documents">
+        <div className="section-title" style={{ padding: 0, marginBottom: 20 }}>
+          <h2>Supporting Documents</h2>
+          <p>支持文件</p>
+        </div>
+        <div className="documents-content" style={{ padding: 0 }}>
+          {documents.length === 0 ? (
+            <p>No documents attached.</p>
+          ) : (
+            <table className="documents-table">
+              <thead>
+                <tr>
+                  <th>Document Name<br />文件名称</th>
+                  <th>Status<br />状态</th>
+                </tr>
+              </thead>
+              <tbody>
+                {documents.map((doc) => (
+                  <tr key={doc}>
+                    <td>{doc}</td>
+                    <td style={{ color: "#0d3276" }}>✓ Attached</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
 
       {error && (
         <div style={{ maxWidth: 900, margin: "20px auto", padding: "0 20px", color: "red" }}>

@@ -1,9 +1,11 @@
 "use client";
 
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Stepper from "@/components/Stepper";
+import { useFormContext } from "@/lib/store";
 
 const documents = [
   "Valid Passport/Travel Document",
@@ -18,6 +20,28 @@ const documents = [
 
 export default function Step3() {
   const router = useRouter();
+  const { form, setDocuments } = useFormContext();
+  const [selected, setSelected] = useState<string[]>(form.documents);
+  const fileRefs = useRef<Map<string, HTMLInputElement>>(new Map());
+
+  const toggle = (doc: string) => {
+    const updated = selected.includes(doc)
+      ? selected.filter((d) => d !== doc)
+      : [...selected, doc];
+    setSelected(updated);
+    setDocuments(updated);
+  };
+
+  const handleFile = (doc: string) => {
+    if (!selected.includes(doc)) {
+      toggle(doc);
+    }
+  };
+
+  const handleDelete = (doc: string) => {
+    fileRefs.current.get(doc)!.value = "";
+    toggle(doc);
+  };
 
   return (
     <>
@@ -43,13 +67,28 @@ export default function Step3() {
               {documents.map((doc) => (
                 <tr key={doc}>
                   <td>{doc}</td>
-                  <td className="attachment-cell" />
+                  <td className="attachment-cell">
+                    {selected.includes(doc) && (
+                      <span style={{ color: "#0d3276" }}>✓ Attached</span>
+                    )}
+                  </td>
                   <td className="action-cell">
                     <label className="upload-btn">
-                      Upload
-                      <input type="file" hidden />
+                      {selected.includes(doc) ? "Replace" : "Upload"}
+                      <input
+                        type="file"
+                        hidden
+                        ref={(el) => {
+                          if (el) fileRefs.current.set(doc, el);
+                        }}
+                        onChange={() => handleFile(doc)}
+                      />
                     </label>
-                    <button className="delete-btn">🗑</button>
+                    {selected.includes(doc) && (
+                      <button className="delete-btn" type="button" onClick={() => handleDelete(doc)}>
+                        🗑
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

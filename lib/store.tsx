@@ -58,6 +58,7 @@ export interface FormData {
   children: Child[];
   applicationInfo: ApplicationInfo;
   visaHistory: VisaHistory | null;
+  documents: string[];
 }
 
 const defaultForm: FormData = {
@@ -94,6 +95,7 @@ const defaultForm: FormData = {
     destinationAfterPH: "",
   },
   visaHistory: null,
+  documents: [],
 };
 
 interface FormContextValue {
@@ -103,6 +105,7 @@ interface FormContextValue {
   setChildren: (data: Child[]) => void;
   setApplicationInfo: (data: ApplicationInfo) => void;
   setVisaHistory: (data: VisaHistory | null) => void;
+  setDocuments: (data: string[]) => void;
   resetForm: () => void;
 }
 
@@ -126,6 +129,9 @@ export function FormProvider({ children }: { children: ReactNode }) {
   const setVisaHistory = (data: VisaHistory | null) =>
     setForm((prev) => ({ ...prev, visaHistory: data }));
 
+  const setDocuments = (data: string[]) =>
+    setForm((prev) => ({ ...prev, documents: data }));
+
   const resetForm = () => setForm(defaultForm);
 
   return (
@@ -137,6 +143,7 @@ export function FormProvider({ children }: { children: ReactNode }) {
         setChildren,
         setApplicationInfo,
         setVisaHistory,
+        setDocuments,
         resetForm,
       }}
     >
