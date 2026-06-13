@@ -1,26 +1,435 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #dce1ff;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  padding-top: 70px;
+}
+
+/* ── Header ── */
+.header {
+  height: 55px;
+  border-bottom: 1px solid #d3d3d3;
+  display: flex;
+  background-color: #faf8ff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+}
+
+.left-section {
+  display: flex;
+  align-items: center;
+  margin-left: 70px;
+  width: 1000px;
+}
+
+.right-section {
+  width: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+.ph-logo {
+  height: 50px;
+}
+
+.portal-title {
+  color: #002576;
+  font-weight: bold;
+  font-size: large;
+}
+
+/* ── Stepper ── */
+.visa-header {
+  text-align: center;
+  width: 60%;
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 16px 0;
+  box-sizing: border-box;
+}
+
+.visa-header h1 {
+  color: #0d3276;
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0 auto;
+  text-transform: uppercase;
+}
+
+.visa-header h2 {
+  color: #444;
+  margin-top: 8px;
+  margin-bottom: 0;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.stepper {
+  margin: 20px auto 0;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.step {
+  width: 120px;
+  text-align: center;
+}
+
+.circle {
+  width: 36px;
+  height: 36px;
+  border: 2px solid #999;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+  color: #666;
+  font-weight: 600;
+}
+
+.step p {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.step span {
+  font-size: 11px;
+  color: #666;
+}
+
+.line {
+  width: 90px;
+  height: 2px;
+  background: #d9d9d9;
+  margin-top: 18px;
+}
+
+.active .circle {
+  border-color: #0d3276;
+  color: #0d3276;
+}
+
+.active p,
+.active span {
+  color: #0d3276;
+}
+
+.active-line {
+  background: #3f61c8;
+}
+
+/* ── Section cards (shared grid layout) ── */
+.applicant-information,
+.application-information,
+.passport-information {
+  background-color: white;
+  width: 60%;
+  max-width: 900px;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  box-sizing: border-box;
+}
+
+.section-title {
+  width: 180px;
+  padding: 24px;
+  background: white;
+}
+
+.section-title h2 {
+  color: #002576;
+  margin: 0;
+}
+
+.form-content {
+  flex: 1;
+  padding: 24px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.field {
+  flex: 1;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.field input[type="text"],
+.field input[type="date"],
+.field input[type="number"],
+.field select {
+  width: 100%;
+  height: 38px;
+  box-sizing: border-box;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #999;
+  border-radius: 0;
+  padding: 0 8px;
+  background: #fff;
+  color: #222;
+}
+
+.field input[type="text"]:focus,
+.field input[type="date"]:focus,
+.field input[type="number"]:focus,
+.field select:focus {
+  outline: none;
+  border-color: #0d3276;
+}
+
+.full-width {
+  margin-bottom: 16px;
+}
+
+/* ── Children ── */
+.children-section {
+  background-color: white;
+  width: 60%;
+  max-width: 900px;
+  margin: 20px auto;
+  border: 1px solid #d9d9d9;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  box-sizing: border-box;
+}
+
+.children-content {
+  flex: 1;
+}
+
+.child-card {
+  background: #f7f7ff;
+  border: 1px solid #d8d8e8;
+  padding: 15px;
+}
+
+.child-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.child-header span {
+  color: #002576;
+  font-weight: 600;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: #ba1a1a;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.child-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.add-child-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  background: white;
+  border: 2px dashed #d0d0d0;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* ── Buttons ── */
+.form-actions {
+  max-width: 900px;
+  margin: 30px auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 0 20px;
+}
+
+.save-btn {
+  background: white;
+  color: #0d3276;
+  border: 1px solid #0d3276;
+  padding: 12px 24px;
+  cursor: pointer;
+}
+
+.next-btn {
+  background: #0d3276;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  cursor: pointer;
+}
+
+.save-btn:hover,
+.next-btn:hover {
+  opacity: 0.9;
+}
+
+/* ── Supporting documents table ── */
+.supporting-documents {
+  background-color: white;
+  width: 60%;
+  max-width: 900px;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.documents-content {
+  padding: 24px;
+}
+
+.documents-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.documents-table th,
+.documents-table td {
+  border: 1px solid #d0d0d0;
+  padding: 10px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.documents-table th {
+  color: #0d3276;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.documents-table td {
+  font-size: 14px;
+}
+
+.attachment-cell {
+  width: 250px;
+}
+
+.action-cell {
+  width: 150px;
+  white-space: nowrap;
+}
+
+.upload-btn {
+  background: #0d3276;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.upload-btn:hover {
+  opacity: 0.9;
+}
+
+.delete-btn {
+  background: transparent;
+  border: none;
+  color: red;
+  font-size: 18px;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+/* ── Visa History ── */
+.visa-history {
+  background-color: white;
+  width: 60%;
+  max-width: 900px;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  box-sizing: border-box;
+}
+
+/* ── Footer ── */
+.footer {
+  height: 70px;
+  border-top: 1px solid #d3d3d3;
+  display: flex;
+  background-color: #e2e1eb;
+  margin-top: 60px;
+}
+
+.left-footer {
+  display: flex;
+  align-items: center;
+  margin-left: 70px;
+  width: 1500px;
+}
+
+.right-footer {
+  width: 700px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+/* ── Checkbox ── */
+.checkbox-field {
+  margin-bottom: 16px;
+}
+
+.checkbox-field input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+/* ── Success ── */
+.success-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  padding: 40px;
+}
+
+.success-container h1 {
+  color: #0d3276;
+  font-size: 36px;
+  margin-bottom: 16px;
+}
+
+.success-container p {
+  color: #444;
+  font-size: 18px;
+  max-width: 500px;
 }
