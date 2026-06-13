@@ -28,7 +28,6 @@ export default function Step1() {
     setChildren([...children, { name: "", age: "", relationship: "" }]);
 
   const removeChild = (index: number) => {
-    if (children.length <= 1) return;
     setChildren(children.filter((_, i) => i !== index));
   };
 
