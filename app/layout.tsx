@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Philippine Visa Portal | 菲律宾签证门户",
   description: "Application for Non-Immigrant Visa to the Philippines",
+  icons: [{ rel: "icon", url: "/phlogo.png" }],
 };
 
 export default function RootLayout({
