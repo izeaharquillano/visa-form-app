@@ -179,6 +179,8 @@ export default function Step4() {
     }
   };
 
+  const { applicant, passport, children, sponsor, applicationInfo, visaHistory, documents } = form;
+
   const Row = ({ label, value }: { label: string; value: string }) => (
     <div className="form-row">
       <div className="field">
