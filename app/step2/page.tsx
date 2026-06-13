@@ -121,12 +121,12 @@ export default function Step2() {
           <div className="form-content">
             <div className="form-row">
               <div className="field">
-                <label>Visa Type / 签证类型 <span className="required">*</span></label>
-                <input type="text" value={visaHistory?.visaType ?? ""} onChange={(e) => updateVisa("visaType", e.target.value)} />
+                <label>Entry Date / 入境日期 <span className="required">*</span></label>
+                <input type="date" value={visaHistory?.entryDate ?? ""} onChange={(e) => updateVisa("entryDate", e.target.value)} />
               </div>
               <div className="field">
-                <label>Visa Issued By / 签发机关 <span className="required">*</span></label>
-                <input type="text" value={visaHistory?.visaIssuedBy ?? ""} onChange={(e) => updateVisa("visaIssuedBy", e.target.value)} />
+                <label>Exit Date / 出境日期 <span className="required">*</span></label>
+                <input type="date" value={visaHistory?.exitDate ?? ""} onChange={(e) => updateVisa("exitDate", e.target.value)} />
               </div>
             </div>
 
@@ -136,19 +136,19 @@ export default function Step2() {
                 <input type="date" value={visaHistory?.visaIssuedDate ?? ""} onChange={(e) => updateVisa("visaIssuedDate", e.target.value)} />
               </div>
               <div className="field">
-                <label>Stay Duration (days) / 停留期限 <span className="required">*</span></label>
-                <input type="text" value={visaHistory?.stayDuration ?? ""} onChange={(e) => updateVisa("stayDuration", e.target.value)} />
+                <label>Visa Issued By / 签发机关 <span className="required">*</span></label>
+                <input type="text" value={visaHistory?.visaIssuedBy ?? ""} onChange={(e) => updateVisa("visaIssuedBy", e.target.value)} />
               </div>
             </div>
 
             <div className="form-row">
               <div className="field">
-                <label>Entry Date / 入境日期 <span className="required">*</span></label>
-                <input type="date" value={visaHistory?.entryDate ?? ""} onChange={(e) => updateVisa("entryDate", e.target.value)} />
+                <label>Visa Type / 签证类型 <span className="required">*</span></label>
+                <input type="text" value={visaHistory?.visaType ?? ""} onChange={(e) => updateVisa("visaType", e.target.value)} />
               </div>
               <div className="field">
-                <label>Exit Date / 出境日期 <span className="required">*</span></label>
-                <input type="date" value={visaHistory?.exitDate ?? ""} onChange={(e) => updateVisa("exitDate", e.target.value)} />
+                <label>Stay Duration (days) / 停留期限 <span className="required">*</span></label>
+                <input type="text" value={visaHistory?.stayDuration ?? ""} onChange={(e) => updateVisa("stayDuration", e.target.value)} />
               </div>
             </div>
           </div>
@@ -160,7 +160,10 @@ export default function Step2() {
           Back
         </button>
         <button type="button" className="next-btn" onClick={handleNext}>
-          Next Step →
+          Next Step
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 4L13 10L7 16" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </button>
       </div>
 

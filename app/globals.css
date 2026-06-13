@@ -4,7 +4,7 @@ body {
   background-color: #dce1ff;
   margin: 0;
   font-family: Arial, sans-serif;
-  padding-top: 70px;
+  padding-top: 68px;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -12,10 +12,15 @@ body {
 
 /* ── Header ── */
 .header {
-  height: 55px;
+  height: 68px;
   border-bottom: 1px solid #d3d3d3;
   display: flex;
-  background-color: #faf8ff;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  background: rgba(250, 248, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   position: fixed;
   top: 0;
   left: 0;
@@ -26,43 +31,41 @@ body {
 .left-section {
   display: flex;
   align-items: center;
-  margin-left: 70px;
-  width: 1000px;
+  gap: 12px;
 }
 
 .right-section {
-  width: 500px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-right: 20px;
+  gap: 24px;
   flex-shrink: 0;
 }
 
 .ph-logo {
-  height: 50px;
+  height: 35px;
 }
 
 .portal-title {
   color: #002576;
   font-weight: bold;
-  font-size: large;
+  font-size: 24px;
 }
 
 /* ── Stepper ── */
 .visa-header {
   text-align: center;
-  width: 60%;
-  max-width: 900px;
+  width: 100%;
+  max-width: 800px;
   margin: 20px auto;
   padding: 16px 0;
   box-sizing: border-box;
 }
 
 .visa-header h1 {
-  color: #0d3276;
-  font-size: 36px;
+  color: rgba(0, 37, 118, 1);
+  font-size: 32px;
   font-weight: 700;
+  line-height: 42px;
   margin: 0 auto;
   text-transform: uppercase;
 }
@@ -72,7 +75,7 @@ body {
   margin-top: 8px;
   margin-bottom: 0;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 24px;
 }
 
 .stepper {
@@ -84,14 +87,14 @@ body {
 }
 
 .step {
-  width: 120px;
+  width: 142px;
   text-align: center;
 }
 
 .circle {
   width: 36px;
   height: 36px;
-  border: 2px solid #999;
+  border: 2px solid rgba(116, 118, 133, 1);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -99,6 +102,7 @@ body {
   margin: 0 auto 10px;
   color: #666;
   font-weight: 600;
+  background: rgba(250, 248, 255, 1);
 }
 
 .step p {
@@ -113,20 +117,21 @@ body {
 }
 
 .line {
-  width: 90px;
+  width: 127px;
   height: 2px;
   background: #d9d9d9;
   margin-top: 18px;
 }
 
 .active .circle {
-  border-color: #0d3276;
-  color: #0d3276;
+  border-color: rgba(0, 37, 118, 1);
+  color: rgba(0, 37, 118, 1);
+  background: rgba(220, 225, 255, 1);
 }
 
 .active p,
 .active span {
-  color: #0d3276;
+  color: rgba(0, 37, 118, 1);
 }
 
 .active-line {
@@ -138,30 +143,32 @@ body {
 .application-information,
 .passport-information {
   background-color: white;
-  width: 60%;
-  max-width: 900px;
+  width: 100%;
+  max-width: 800px;
   margin: 20px auto;
-  border: 1px solid #ccc;
-  padding: 20px;
+  border: 1px solid #C4C5D5;
+  box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.05);
+  padding: 32px;
   display: grid;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 180px 1fr;
   box-sizing: border-box;
 }
 
 .section-title {
   width: 180px;
-  padding: 24px;
+  padding: 0;
   background: white;
 }
 
 .section-title h2 {
   color: #002576;
   margin: 0;
+  font-size: 24px;
+  font-weight: 700;
 }
 
 .form-content {
   flex: 1;
-  padding: 24px;
 }
 
 .form-row {
@@ -178,6 +185,7 @@ body {
   display: block;
   margin-bottom: 6px;
   font-size: 14px;
+  font-weight: 500;
 }
 
 .field input:disabled,
@@ -197,11 +205,9 @@ body {
 .field input[type="number"],
 .field select {
   width: 100%;
-  height: 38px;
+  height: 42px;
   box-sizing: border-box;
-  border-width: 1px;
-  border-style: solid;
-  border-color: #999;
+  border: 1px solid #C4C5D5;
   border-radius: 0;
   padding: 0 8px;
   background: #fff;
@@ -223,13 +229,14 @@ body {
 /* ── Children ── */
 .children-section {
   background-color: white;
-  width: 60%;
-  max-width: 900px;
+  width: 100%;
+  max-width: 800px;
   margin: 20px auto;
-  border: 1px solid #d9d9d9;
-  padding: 20px;
+  border: 1px solid #C4C5D5;
+  box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.05);
+  padding: 32px;
   display: grid;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 180px 1fr;
   box-sizing: border-box;
 }
 
@@ -238,7 +245,7 @@ body {
 }
 
 .child-card {
-  background: #f7f7ff;
+  background: rgba(244, 243, 253, 1);
   border: 1px solid #d8d8e8;
   padding: 15px;
 }
@@ -281,28 +288,43 @@ body {
 
 /* ── Buttons ── */
 .form-actions {
-  max-width: 900px;
+  max-width: 800px;
+  width: 100%;
   margin: 30px auto;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   gap: 12px;
-  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .save-btn {
   background: white;
-  color: #0d3276;
-  border: 1px solid #0d3276;
+  color: rgba(0, 37, 118, 1);
+  border: 1px solid rgba(0, 37, 118, 1);
   padding: 12px 24px;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .next-btn {
-  background: #0d3276;
+  background: rgba(0, 37, 118, 1);
   color: white;
   border: none;
   padding: 12px 24px;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .save-btn:hover,
@@ -313,11 +335,12 @@ body {
 /* ── Supporting documents table ── */
 .supporting-documents {
   background-color: white;
-  width: 60%;
-  max-width: 900px;
+  width: 100%;
+  max-width: 800px;
   margin: 20px auto;
-  border: 1px solid #ccc;
-  padding: 20px;
+  border: 1px solid #C4C5D5;
+  box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.05);
+  padding: 32px;
   box-sizing: border-box;
 }
 
@@ -382,13 +405,14 @@ body {
 /* ── Visa History ── */
 .visa-history {
   background-color: white;
-  width: 60%;
-  max-width: 900px;
+  width: 100%;
+  max-width: 800px;
   margin: 20px auto;
-  border: 1px solid #ccc;
-  padding: 20px;
+  border: 1px solid #C4C5D5;
+  box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.05);
+  padding: 32px;
   display: grid;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 180px 1fr;
   box-sizing: border-box;
 }
 

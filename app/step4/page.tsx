@@ -320,7 +320,7 @@ export default function Step4() {
           Back
         </button>
         <button type="button" className="next-btn" onClick={handleSubmit} disabled={submitting}>
-          {submitting ? "Submitting..." : "Submit Application"}
+          {submitting ? "Saving..." : "Save"}
         </button>
       </div>
 

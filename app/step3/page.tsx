@@ -49,18 +49,22 @@ export default function Step3() {
       <Stepper currentStep={3} />
 
       <div className="supporting-documents">
-        <div className="section-title" style={{ padding: 0, marginBottom: 20 }}>
-          <h2>Supporting Documents</h2>
-          <p>支持文件</p>
+        <div style={{ marginBottom: 32 }}>
+          <h2 style={{ color: "#002576", margin: 0, fontSize: 24, fontWeight: 700, lineHeight: "34px" }}>
+            Supporting Documents
+          </h2>
+          <p style={{ color: "rgba(68,70,83,1)", margin: "4px 0 0", fontSize: 24, fontWeight: 500, lineHeight: "34px" }}>
+            支持文件
+          </p>
         </div>
 
-        <div className="documents-content">
+        <div className="documents-content" style={{ padding: 0 }}>
           <table className="documents-table">
             <thead>
               <tr>
                 <th>Document Name<br />文件名称</th>
-                <th>Attachment<br />依恋</th>
-                <th>Action<br />行动</th>
+                <th>Attachment<br />附件</th>
+                <th>Action<br />操作</th>
               </tr>
             </thead>
             <tbody>
@@ -86,7 +90,7 @@ export default function Step3() {
                     </label>
                     {selected.includes(doc) && (
                       <button className="delete-btn" type="button" onClick={() => handleDelete(doc)}>
-                        🗑
+                        ✕
                       </button>
                     )}
                   </td>
@@ -99,10 +103,13 @@ export default function Step3() {
 
       <div className="form-actions">
         <button type="button" className="save-btn" onClick={() => router.push("/step2")}>
-          Back
+          Save for Later
         </button>
         <button type="button" className="next-btn" onClick={() => router.push("/step4")}>
-          Next Step →
+          Next Step
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 4L13 10L7 16" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </button>
       </div>
 

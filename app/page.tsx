@@ -197,12 +197,12 @@ export default function Step1() {
                 <div className="child-header">
                   <span>Child #{i + 1} | 孩子#{i + 1}</span>
                   <button className="remove-btn" type="button" onClick={() => removeChild(i)}>
-                    Remove | 消除
+                    Remove | 移除
                   </button>
                 </div>
                 <div className="child-row">
                   <div className="field">
-                    <label>Child Name / 孩子姓名</label>
+                    <label>Child Name / 儿童姓名</label>
                     <input type="text" value={child.name} onChange={(e) => updateChild(i, "name", e.target.value)} />
                   </div>
                   <div className="field">
@@ -261,8 +261,14 @@ export default function Step1() {
       </div>
 
       <div className="form-actions">
+        <button type="button" className="save-btn">
+          Save for Later
+        </button>
         <button type="button" className="next-btn" onClick={handleNext}>
-          Next Step →
+          Next Step
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 4L13 10L7 16" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </button>
       </div>
 
