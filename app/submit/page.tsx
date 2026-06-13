@@ -7,7 +7,7 @@ export default function SubmitPage() {
   return (
     <>
       <Header />
-      <div className="success-container">
+      <div className="success-container" style={{ flex: 1 }}>
         <h1>Application Submitted</h1>
         <p>申请已提交</p>
         <p>
