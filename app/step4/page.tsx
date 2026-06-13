@@ -24,7 +24,7 @@ export default function Step4() {
       const supabase = getSupabase();
       const db = supabase as any;
 
-      const now = Date.now();
+      const now = Math.floor(Date.now() / 1000);
 
       // 1. Insert applicant
       const { data: appData, error: appErr } = await db
