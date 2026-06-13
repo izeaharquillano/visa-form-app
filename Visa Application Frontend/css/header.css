@@ -1,0 +1,36 @@
+.header {
+    height: 55px;
+    border: 1px solid #d3d3d3;
+    display: flex;
+    background-color: #FAF8FF;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+.left-section {
+    display: flex;
+    align-items: center;
+    margin-left: 70px;
+    width: 1000px;
+}
+
+.right-section {
+    width: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-right: 20px;
+    flex-shrink: 0;
+}
+
+.ph-logo{
+    height: 50px;
+}
+
+.portal-title{
+    color: #002576;
+    font-weight: bold;
+    font-size: large;
+}
