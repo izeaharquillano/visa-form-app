@@ -19,7 +19,7 @@ export default function Step4() {
     setError("");
 
     try {
-      const { applicant, passport, children, applicationInfo, visaHistory, documents } = form;
+  const { applicant, passport, children, sponsor, applicationInfo, visaHistory, documents } = form;
 
       const supabase = getSupabase();
       const db = supabase as any;
@@ -89,7 +89,22 @@ export default function Step4() {
         if (relErr) throw relErr;
       }
 
-      // 4. Insert sponsor (skip for now — no sponsor form fields)
+      // 4. Insert sponsor
+      let sponsorId = null;
+      if (sponsor.name || sponsor.address || sponsor.contact) {
+        const { data: sponsorData, error: sponsorErr } = await db
+          .from("sponsor_information_t")
+          .insert({
+            sponsor_id: now + 50,
+            sponsor_name: sponsor.name || null,
+            sponsor_address: sponsor.address || null,
+            sponsor_contact_num: sponsor.contact || null,
+          })
+          .select("sponsor_id")
+          .single();
+        if (sponsorErr) throw sponsorErr;
+        sponsorId = sponsorData.sponsor_id;
+      }
 
       // 5. Insert application info
       const { data: applicationData, error: appInfoErr } = await db
@@ -104,6 +119,7 @@ export default function Step4() {
           companion_name: applicationInfo.companionName || null,
           destination_after_phil: applicationInfo.destinationAfterPH,
           prev_had_visa: visaHistory ? 1 : 0,
+          sponsor_id: sponsorId,
         })
         .select("application_id")
         .single();
@@ -147,8 +163,6 @@ export default function Step4() {
       setSubmitting(false);
     }
   };
-
-  const { applicant, passport, children, applicationInfo, visaHistory, documents } = form;
 
   const Row = ({ label, value }: { label: string; value: string }) => (
     <div className="form-row">
@@ -219,6 +233,16 @@ export default function Step4() {
               </div>
             ))
           )}
+        </div>
+      </div>
+
+      {/* Sponsor Review */}
+      <div className="sponsor-information">
+        <div className="section-title"><h2>Sponsor Information</h2><p>赞助人信息</p></div>
+        <div className="form-content">
+          <div className="field full-width"><label>Sponsor Name</label><input type="text" value={sponsor.name} disabled /></div>
+          <div className="field full-width"><label>Sponsor Address</label><input type="text" value={sponsor.address} disabled /></div>
+          <div className="field full-width"><label>Sponsor Contact</label><input type="text" value={sponsor.contact} disabled /></div>
         </div>
       </div>
 

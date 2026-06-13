@@ -9,8 +9,8 @@ import { useFormContext } from "@/lib/store";
 
 export default function Step2() {
   const router = useRouter();
-  const { form, setApplicationInfo, setVisaHistory } = useFormContext();
-  const { applicationInfo, visaHistory } = form;
+  const { form, setSponsor, setApplicationInfo, setVisaHistory } = useFormContext();
+  const { sponsor, applicationInfo, visaHistory } = form;
 
   const [hasPastVisa, setHasPastVisa] = useState(visaHistory?.hasPastVisa ?? false);
 

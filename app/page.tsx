@@ -8,8 +8,8 @@ import { useFormContext, type Child } from "@/lib/store";
 
 export default function Step1() {
   const router = useRouter();
-  const { form, setApplicant, setPassport, setChildren } = useFormContext();
-  const { applicant, passport, children } = form;
+  const { form, setApplicant, setPassport, setChildren, setSponsor } = useFormContext();
+  const { applicant, passport, children, sponsor } = form;
 
   const update = (field: string, value: string) =>
     setApplicant({ ...applicant, [field]: value });
@@ -224,6 +224,31 @@ export default function Step1() {
           <button className="add-child-btn" type="button" onClick={addChild}>
             + Add Another Child | 添加另一个孩子
           </button>
+        </div>
+      </div>
+
+      {/* Sponsor Information */}
+      <div className="sponsor-information">
+        <div className="section-title">
+          <h2>Sponsor Information</h2>
+          <p>赞助人信息</p>
+        </div>
+
+        <div className="form-content">
+          <div className="field full-width">
+            <label>Sponsor Name / 赞助人姓名</label>
+            <input type="text" value={sponsor.name} onChange={(e) => setSponsor({ ...sponsor, name: e.target.value })} />
+          </div>
+
+          <div className="field full-width">
+            <label>Sponsor Address / 赞助人地址</label>
+            <input type="text" value={sponsor.address} onChange={(e) => setSponsor({ ...sponsor, address: e.target.value })} />
+          </div>
+
+          <div className="field full-width">
+            <label>Sponsor Contact / 赞助人联系方式</label>
+            <input type="text" value={sponsor.contact} onChange={(e) => setSponsor({ ...sponsor, contact: e.target.value })} />
+          </div>
         </div>
       </div>
 

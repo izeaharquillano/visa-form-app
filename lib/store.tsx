@@ -33,6 +33,12 @@ export interface Child {
   relationship: string;
 }
 
+export interface Sponsor {
+  name: string;
+  address: string;
+  contact: string;
+}
+
 export interface ApplicationInfo {
   portOfEntry: string;
   stayLength: string;
@@ -56,6 +62,7 @@ export interface FormData {
   applicant: Applicant;
   passport: Passport;
   children: Child[];
+  sponsor: Sponsor;
   applicationInfo: ApplicationInfo;
   visaHistory: VisaHistory | null;
   documents: string[];
@@ -86,6 +93,7 @@ const defaultForm: FormData = {
     issuedBy: "",
   },
   children: [],
+  sponsor: { name: "", address: "", contact: "" },
   applicationInfo: {
     portOfEntry: "",
     stayLength: "",
@@ -103,6 +111,7 @@ interface FormContextValue {
   setApplicant: (data: Applicant) => void;
   setPassport: (data: Passport) => void;
   setChildren: (data: Child[]) => void;
+  setSponsor: (data: Sponsor) => void;
   setApplicationInfo: (data: ApplicationInfo) => void;
   setVisaHistory: (data: VisaHistory | null) => void;
   setDocuments: (data: string[]) => void;
@@ -123,6 +132,9 @@ export function FormProvider({ children }: { children: ReactNode }) {
   const setChildren = (data: Child[]) =>
     setForm((prev) => ({ ...prev, children: data }));
 
+  const setSponsor = (data: Sponsor) =>
+    setForm((prev) => ({ ...prev, sponsor: data }));
+
   const setApplicationInfo = (data: ApplicationInfo) =>
     setForm((prev) => ({ ...prev, applicationInfo: data }));
 
@@ -141,6 +153,7 @@ export function FormProvider({ children }: { children: ReactNode }) {
         setApplicant,
         setPassport,
         setChildren,
+        setSponsor,
         setApplicationInfo,
         setVisaHistory,
         setDocuments,
