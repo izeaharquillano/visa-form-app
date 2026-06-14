@@ -1,36 +1,233 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Philippine Visa Portal | 菲律宾签证门户
+
+A bilingual (English/Chinese) multi-step web application for submitting Philippine Non-Immigrant Visa applications. Built with Next.js 16, React 19, and Supabase.
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16.2.4 (Turbopack) |
+| UI Library | React 19.2.4 |
+| Language | TypeScript 5 |
+| Styling | Tailwind CSS 4 + custom CSS |
+| Database | Supabase (PostgreSQL) |
+| Client | @supabase/supabase-js 2.108.1 |
+| Linting | ESLint 9 (flat config) |
+
+## Project Structure
+
+```
+visa-form-app/
+├── app/                          # Next.js App Router pages
+│   ├── globals.css               # Global styles (Tailwind + custom)
+│   ├── layout.tsx                # RootLayout — wraps all pages in FormProvider
+│   ├── page.tsx                  # Step 1 — Applicant Info, Passport, Children, Sponsor
+│   ├── step2/page.tsx            # Step 2 — Application Info, Visa History
+│   ├── step3/page.tsx            # Step 3 — Supporting Documents
+│   ├── step4/page.tsx            # Step 4 — Review & Submit to Supabase
+│   └── submit/page.tsx           # Success confirmation page
+├── components/
+│   ├── Stepper.tsx               # 4-step progress indicator
+│   ├── Header.tsx                # Top nav bar with logo
+│   └── Footer.tsx                # Bottom footer
+├── lib/
+│   ├── store.tsx                 # React Context — form state management
+│   └── supabase.ts               # Supabase client singleton
+├── public/
+│   └── phlogo.png                # Philippine flag logo
+├── .env.local                    # Supabase credentials (gitignored)
+├── supabase-migration.sql        # Run in Supabase SQL Editor to set up auto-increment PKs
+├── next.config.ts
+├── tsconfig.json
+├── eslint.config.mjs
+├── postcss.config.mjs
+└── package.json
+```
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20+
+- A Supabase project (free tier works)
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create `.env.local` with your Supabase project credentials:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+NEXT_PUBLIC_VISA_VISASUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_VISA_VISASUPABASE_ANON_KEY=your-anon-key
+```
 
-## Learn More
+Fallback names (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`) are also supported.
 
-To learn more about Next.js, take a look at the following resources:
+### Run
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run dev        # Development (Turbopack)
+npm run build      # Production build
+npm run start      # Start production server
+npm run lint       # ESLint
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Application Walkthrough
 
-## Deploy on Vercel
+The form is split across 4 steps. All data is held in-memory via React Context (`lib/store.tsx`) — it is **not** persisted locally. Submission happens only at Step 4.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Step 1 — `/` (Applicant Info)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Fields:
+- **Applicant Information**: Surname, First Name, Sex, Birth Date/Place, Citizenship, Address, Contact, Occupation, Employment Address, Father/Mother Name, Civil Status, Spouse Name/Citizenship
+- **Passport Information**: Number, Issued/Expiry Date, Issued By
+- **Children**: Dynamic list — add/remove children with name, age, and relationship type (Mother/Father)
+- **Sponsor Information**: Name, Address, Contact (optional)
+
+Validation runs on "Next Step" — required fields are checked client-side.
+
+### Step 2 — `/step2` (Application Info)
+
+Fields:
+- **Application Information**: Port of Entry, Stay Length (days), Entry Purpose, Age at Application, Companion Name, Destination after Philippines
+- **Visa History**: Optional — toggled by checkbox. If checked, requires Visa Type, Issued By/Date, Stay Duration, Entry/Exit Dates
+
+### Step 3 — `/step3` (Supporting Documents)
+
+Checklist of 8 document types (e.g., Valid Passport, Chinese National ID, Affidavit of Support, Air Ticket, etc.). Each can be marked as attached.
+
+### Step 4 — `/step4` (Review & Submit)
+
+Read-only review of all entered data. "Save" triggers a Supabase insert across 7 tables, then redirects to `/submit` on success.
+
+### Submit — `/submit`
+
+Static confirmation page ("Application Submitted").
+
+## Database Schema
+
+The schema is managed in the Supabase dashboard. There are no migration files in this repo. Tables used:
+
+| Table | Purpose | PK Column | FK References |
+|---|---|---|---|
+| `applicant_information_t` | Main applicant details | `applicant_id` (auto-increment) | — |
+| `passport_information_t` | Passport details | `passport_id` (auto-increment) | `applicant_id` |
+| `applicant_children_t` | Children of applicant | `child_id` (auto-increment) | — |
+| `parent_child_relationship_t` | Links children to applicant | (composite or existing PK) | `child_id`, `applicant_id` |
+| `sponsor_information_t` | Sponsor details | `sponsor_id` (auto-increment) | — |
+| `application_information_t` | Visa application details | `application_id` (auto-increment) | `applicant_id`, `sponsor_id` |
+| `supporting_documents_t` | Uploaded document names | `document_id` (auto-increment) | `application_id` |
+| `visa_history_t` | Past visa records | `visa_num` (string, manually generated) | `applicant_id` |
+
+All integer primary keys use `GENERATED BY DEFAULT AS IDENTITY` — the database auto-assigns incrementing values, so the application no longer manually computes IDs from timestamps.
+
+## Data Flow
+
+1. **Form state** is managed by `FormProvider` (`lib/store.tsx`) using React Context + `useState`.
+2. Each step reads/writes its slice of `FormData` via context setters.
+3. On **Submit** (Step 4), `getSupabase()` creates a Supabase client, then 7 sequential inserts happen in dependency order (applicant → passport/children → sponsor → application → documents/visa_history).
+4. If any insert fails, a rollback loop deletes previously inserted rows using tracked IDs.
+5. On success, `resetForm()` clears context and redirects to `/submit`.
+
+### Interface Types (`lib/store.tsx`)
+
+```typescript
+interface Applicant { surname, firstname, sex, birthdate, birthplace, citizenship, address, contact, occupation, employmentAddress, father, mother, civilStatus, spouse, spouseCitizenship }
+interface Passport { number, issuedDate, expiryDate, issuedBy }
+interface Child { name, age, relationship }
+interface Sponsor { name, address, contact }
+interface ApplicationInfo { portOfEntry, stayLength, entryPurpose, ageAtApplication, companionName, destinationAfterPH }
+interface VisaHistory { hasPastVisa, visaType, visaIssuedBy, visaIssuedDate, stayDuration, entryDate, exitDate }
+interface FormData { applicant, passport, children, sponsor, applicationInfo, visaHistory, documents }
+```
+
+## Auto-Increment Primary Key Migration
+
+Previously, the app generated primary keys using `Math.floor(Date.now() / 1000)` with manual offsets — a fragile approach prone to collisions. The migration switched all integer PKs to database-managed sequences.
+
+### SQL to run in Supabase SQL Editor
+
+```sql
+ALTER TABLE applicant_information_t
+ALTER COLUMN applicant_id ADD GENERATED BY DEFAULT AS IDENTITY;
+
+ALTER TABLE passport_information_t
+ALTER COLUMN passport_id ADD GENERATED BY DEFAULT AS IDENTITY;
+
+ALTER TABLE applicant_children_t
+ALTER COLUMN child_id ADD GENERATED BY DEFAULT AS IDENTITY;
+
+ALTER TABLE sponsor_information_t
+ALTER COLUMN sponsor_id ADD GENERATED BY DEFAULT AS IDENTITY;
+
+ALTER TABLE application_information_t
+ALTER COLUMN application_id ADD GENERATED BY DEFAULT AS IDENTITY;
+
+ALTER TABLE supporting_documents_t
+ALTER COLUMN document_id ADD GENERATED BY DEFAULT AS IDENTITY;
+
+-- Reset sequences to start after existing data
+SELECT setval(pg_get_serial_sequence('applicant_information_t', 'applicant_id'), COALESCE(MAX(applicant_id), 0) + 1)
+FROM applicant_information_t;
+SELECT setval(pg_get_serial_sequence('passport_information_t', 'passport_id'), COALESCE(MAX(passport_id), 0) + 1)
+FROM passport_information_t;
+SELECT setval(pg_get_serial_sequence('applicant_children_t', 'child_id'), COALESCE(MAX(child_id), 0) + 1)
+FROM applicant_children_t;
+SELECT setval(pg_get_serial_sequence('sponsor_information_t', 'sponsor_id'), COALESCE(MAX(sponsor_id), 0) + 1)
+FROM sponsor_information_t;
+SELECT setval(pg_get_serial_sequence('application_information_t', 'application_id'), COALESCE(MAX(application_id), 0) + 1)
+FROM application_information_t;
+SELECT setval(pg_get_serial_sequence('supporting_documents_t', 'document_id'), COALESCE(MAX(document_id), 0) + 1)
+FROM supporting_documents_t;
+```
+
+### Verify
+
+```sql
+SELECT table_name, column_name, identity_generation
+FROM information_schema.columns
+WHERE table_schema = 'public' AND is_identity = 'YES';
+```
+
+Expect 6 rows with `GENERATED BY DEFAULT`.
+
+## Deployment
+
+The app is deployed on Vercel. Standard Next.js deployment:
+
+1. Push to GitHub (`origin`: `git@github.com:izeaharquillano/visa-form-app.git`)
+2. Import repo in Vercel
+3. Set environment variables in Vercel dashboard
+4. Deploy
+
+### Git History Highlights
+
+```
+70ea989 another one
+3ae4096 fixed bug
+9d84a3e fixed sponsor information card bugs and moved to first step
+c47d9aa added sponsor information card
+dff9e9c fixed remove child bug
+9406532 updated styles of submit
+a76ec44 updated styles
+16c21f8 made phlogo clickable and fixed footer positioning
+27e76b1 made phlogo as website icon
+e045834 fixed date integer bug
+95c7788 fixed bug where envvvars dont match remote envvar names
+061be4d bunch of fixes
+d2cba79 added required fields
+4154aa5 fixed deployment bug
+569a9ac integrated frontend with vercel, along wiht supabase
+```
+
+## Notes
+
+- The `visa_history_t` table's primary key is `visa_num` (a string like `VXXXXXXXX`) — it is not auto-incrementing. This is by design; the value is generated client-side from a timestamp.
+- `parent_child_relationship_t` already had a primary key defined and was not modified by the migration.
+- The Supabase client is cast to `any` in `step4/page.tsx` — no generated type definitions are used.
+- File uploads in Step 3 are UI-only; no files are actually sent to any backend or stored.

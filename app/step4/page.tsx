@@ -24,7 +24,6 @@ export default function Step4() {
       const supabase = getSupabase();
       const db = supabase as any;
 
-      const now = Math.floor(Date.now() / 1000);
       const insertedIds: { table: string; idCol: string; id: number }[] = [];
 
       const cleanup = async () => {
@@ -39,7 +38,6 @@ export default function Step4() {
       const { data: appData, error: appErr } = await db
         .from("applicant_information_t")
         .insert({
-          applicant_id: now,
           surname: applicant.surname,
           firstname: applicant.firstname,
           sex: applicant.sex,
@@ -65,18 +63,19 @@ export default function Step4() {
 
       // 2. Insert passport
       if (passport.number) {
-          const { error: passErr } = await db
+          const { data: passData, error: passErr } = await db
           .from("passport_information_t")
           .insert({
-            passport_id: now + 1,
             applicant_id: applicantId,
             passport_num: passport.number,
             passport_issued_date: passport.issuedDate || null,
             passport_expiry_date: passport.expiryDate || null,
             passport_issued_by: passport.issuedBy || null,
-          });
+          })
+          .select("passport_id")
+          .single();
         if (passErr) { await cleanup(); throw passErr; }
-        insertedIds.push({ table: "passport_information_t", idCol: "passport_id", id: now + 1 });
+        insertedIds.push({ table: "passport_information_t", idCol: "passport_id", id: passData.passport_id });
       }
 
       // 3. Insert children + relationships
@@ -84,7 +83,7 @@ export default function Step4() {
         const child = children[i];
           const { data: childData, error: childErr } = await db
           .from("applicant_children_t")
-          .insert({ child_id: now + 10 + i, child_name: child.name, child_age: Number(child.age) || null })
+          .insert({ child_name: child.name, child_age: Number(child.age) || null })
           .select("child_id")
           .single();
 
@@ -107,7 +106,6 @@ export default function Step4() {
         const { data: sponsorData, error: sponsorErr } = await db
           .from("sponsor_information_t")
           .insert({
-            sponsor_id: now + 50,
             sponsor_name: sponsor.name || null,
             sponsor_address: sponsor.address || null,
             sponsor_contact_num: sponsor.contact || null,
@@ -123,7 +121,6 @@ export default function Step4() {
       const { data: applicationData, error: appInfoErr } = await db
         .from("application_information_t")
         .insert({
-          application_id: now + 100,
           applicant_id: applicantId,
           age_at_application: Number(applicationInfo.ageAtApplication) || null,
           port_of_entry: applicationInfo.portOfEntry,
@@ -143,15 +140,16 @@ export default function Step4() {
 
       // 6. Insert supporting documents
       for (let i = 0; i < documents.length; i++) {
-        const { error: docErr } = await db
+        const { data: docData, error: docErr } = await db
           .from("supporting_documents_t")
           .insert({
-            document_id: now + 200 + i,
             application_id: applicationId,
             document_name: documents[i],
-          });
+          })
+          .select("document_id")
+          .single();
         if (docErr) { await cleanup(); throw docErr; }
-        insertedIds.push({ table: "supporting_documents_t", idCol: "document_id", id: now + 200 + i });
+        insertedIds.push({ table: "supporting_documents_t", idCol: "document_id", id: docData.document_id });
       }
 
       // 7. Insert visa history
@@ -159,7 +157,7 @@ export default function Step4() {
           const { error: visaErr } = await db
           .from("visa_history_t")
           .insert({
-            visa_num: `V${now.toString(36).toUpperCase().padStart(8, "0").slice(0, 8)}`,
+            visa_num: `V${Date.now().toString(36).toUpperCase().padStart(8, "0").slice(0, 8)}`,
             applicant_id: applicantId,
             visa_type: visaHistory.visaType,
             visa_issuing_officer: visaHistory.visaIssuedBy,
