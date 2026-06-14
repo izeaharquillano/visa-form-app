@@ -294,9 +294,6 @@ export default function Step1() {
       </div>
 
       <div className="form-actions">
-        <button type="button" className="save-btn">
-          Back
-        </button>
         <button type="button" className="next-btn" onClick={handleNext}>
           Next Step
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
