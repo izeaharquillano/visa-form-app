@@ -43,6 +43,14 @@ export default function Step3() {
     toggle(doc);
   };
 
+  const handleNext = () => {
+    if (!selected.includes("Valid Passport/Travel Document")) {
+      alert("Valid Passport/Travel Document is required.\n\n请上传有效护照/旅行证件。");
+      return;
+    }
+    router.push("/step4");
+  };
+
   return (
     <>
       <Header />
@@ -70,7 +78,7 @@ export default function Step3() {
             <tbody>
               {documents.map((doc) => (
                 <tr key={doc}>
-                  <td>{doc}</td>
+                  <td>{doc}{doc === "Valid Passport/Travel Document" && <span className="required"> *</span>}</td>
                   <td className="attachment-cell">
                     {selected.includes(doc) && (
                       <span style={{ color: "#0d3276" }}>✓ Attached</span>
@@ -103,9 +111,9 @@ export default function Step3() {
 
       <div className="form-actions">
         <button type="button" className="save-btn" onClick={() => router.push("/step2")}>
-          Save for Later
+          Back
         </button>
-        <button type="button" className="next-btn" onClick={() => router.push("/step4")}>
+        <button type="button" className="next-btn" onClick={handleNext}>
           Next Step
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M7 4L13 10L7 16" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

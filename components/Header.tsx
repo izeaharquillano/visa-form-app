@@ -9,7 +9,6 @@ export default function Header() {
       </div>
       <div className="right-section">
         <span style={{ color: "#002576", cursor: "pointer" }}>Language: EN/ZH</span>
-        <span style={{ color: "#002576", cursor: "pointer" }}>Sign In</span>
       </div>
     </div>
   );
