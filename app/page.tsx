@@ -60,8 +60,8 @@ export default function Step1() {
     for (let i = 0; i < children.length; i++) {
       const c = children[i];
       if (!required(c.name)) missing.push(`Child #${i + 1} Name`);
-      if (!required(c.age)) missing.push(`Child #${i + 1} Age`);
-      else if (!isNumeric(c.age) || Number(c.age) < 1) missing.push(`Child #${i + 1} Age (must be a positive number)`);
+      if (c.age.trim() !== "" && (!isNumeric(c.age) || Number(c.age) < 1)) missing.push(`Child #${i + 1} Age must be a positive number`);
+      else if (!required(c.age)) missing.push(`Child #${i + 1} Age is required`);
       if (!c.relationship || c.relationship === "Select" || c.relationship === "Select / 选择") missing.push(`Child #${i + 1} Relationship`);
     }
 

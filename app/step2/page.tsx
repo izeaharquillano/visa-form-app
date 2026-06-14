@@ -35,26 +35,26 @@ export default function Step2() {
   const handleNext = () => {
     const missing: string[] = [];
 
-    if (!required(applicationInfo.portOfEntry)) missing.push("Port of Entry");
-    if (!required(applicationInfo.stayLength)) missing.push("Stay Length");
-    else if (!isNumeric(applicationInfo.stayLength)) missing.push("Stay Length (must be a positive number)");
-    if (!required(applicationInfo.entryPurpose)) missing.push("Entry Purpose");
-    if (!required(applicationInfo.ageAtApplication)) missing.push("Age at Application");
-    else if (!isNumeric(applicationInfo.ageAtApplication)) missing.push("Age at Application (must be a positive number)");
-    if (!required(applicationInfo.destinationAfterPH)) missing.push("Destination after Philippines");
+    if (!required(applicationInfo.portOfEntry)) missing.push("Port of Entry is required");
+    if (applicationInfo.stayLength.trim() !== "" && !isNumeric(applicationInfo.stayLength)) missing.push("Stay Length must be a positive number");
+    else if (!required(applicationInfo.stayLength)) missing.push("Stay Length is required");
+    if (!required(applicationInfo.entryPurpose)) missing.push("Entry Purpose is required");
+    if (applicationInfo.ageAtApplication.trim() !== "" && !isNumeric(applicationInfo.ageAtApplication)) missing.push("Age at Application must be a positive number");
+    else if (!required(applicationInfo.ageAtApplication)) missing.push("Age at Application is required");
+    if (!required(applicationInfo.destinationAfterPH)) missing.push("Destination after Philippines is required");
 
     if (hasPastVisa) {
-      if (!required(visaHistory?.visaType ?? "")) missing.push("Visa Type");
-      if (!required(visaHistory?.visaIssuedBy ?? "")) missing.push("Visa Issued By");
-      if (!required(visaHistory?.visaIssuedDate ?? "")) missing.push("Visa Issued Date");
-      if (!required(visaHistory?.stayDuration ?? "")) missing.push("Stay Duration");
-      else if (!isNumeric(visaHistory?.stayDuration ?? "")) missing.push("Stay Duration (must be a positive number)");
-      if (!required(visaHistory?.entryDate ?? "")) missing.push("Entry Date");
-      if (!required(visaHistory?.exitDate ?? "")) missing.push("Exit Date");
+      if (!required(visaHistory?.visaType ?? "")) missing.push("Visa Type is required");
+      if (!required(visaHistory?.visaIssuedBy ?? "")) missing.push("Visa Issued By is required");
+      if (!required(visaHistory?.visaIssuedDate ?? "")) missing.push("Visa Issued Date is required");
+      if ((visaHistory?.stayDuration ?? "").trim() !== "" && !isNumeric(visaHistory?.stayDuration ?? "")) missing.push("Stay Duration must be a positive number");
+      else if (!required(visaHistory?.stayDuration ?? "")) missing.push("Stay Duration is required");
+      if (!required(visaHistory?.entryDate ?? "")) missing.push("Entry Date is required");
+      if (!required(visaHistory?.exitDate ?? "")) missing.push("Exit Date is required");
     }
 
     if (missing.length > 0) {
-      alert("Please fill in the following fields:\n\n" + missing.join("\n"));
+      alert("Please correct the following:\n\n" + missing.join("\n"));
       return;
     }
 
@@ -80,7 +80,7 @@ export default function Step2() {
             </div>
             <div className="field">
               <label>Stay Length (days) / 停留时间 <span className="required">*</span></label>
-              <input type="number" value={applicationInfo.stayLength} onChange={(e) => updateInfo("stayLength", e.target.value)} />
+              <input type="text" value={applicationInfo.stayLength} onChange={(e) => updateInfo("stayLength", e.target.value)} />
             </div>
           </div>
 
@@ -152,7 +152,7 @@ export default function Step2() {
               </div>
               <div className="field">
               <label>Stay Duration (days) / 停留期限 <span className="required">*</span></label>
-              <input type="number" value={visaHistory?.stayDuration ?? ""} onChange={(e) => updateVisa("stayDuration", e.target.value)} />
+              <input type="text" value={visaHistory?.stayDuration ?? ""} onChange={(e) => updateVisa("stayDuration", e.target.value)} />
               </div>
             </div>
           </div>
