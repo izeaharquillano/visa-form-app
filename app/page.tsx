@@ -32,6 +32,7 @@ export default function Step1() {
   };
 
   const required = (v: string) => v.trim() !== "";
+  const isNumeric = (v: string) => /^\d+$/.test(v.trim());
 
   const handleNext = () => {
     const missing: string[] = [];
@@ -55,6 +56,14 @@ export default function Step1() {
     if (!required(passport.issuedDate)) missing.push("Passport Issued Date");
     if (!required(passport.expiryDate)) missing.push("Passport Expiry Date");
     if (!required(passport.issuedBy)) missing.push("Passport Issued By");
+
+    for (let i = 0; i < children.length; i++) {
+      const c = children[i];
+      if (!required(c.name)) missing.push(`Child #${i + 1} Name`);
+      if (!required(c.age)) missing.push(`Child #${i + 1} Age`);
+      else if (!isNumeric(c.age) || Number(c.age) < 1) missing.push(`Child #${i + 1} Age (must be a positive number)`);
+      if (!c.relationship || c.relationship === "Select" || c.relationship === "Select / 选择") missing.push(`Child #${i + 1} Relationship`);
+    }
 
     if (missing.length > 0) {
       alert("Please fill in the following fields:\n\n" + missing.join("\n"));
@@ -201,16 +210,16 @@ export default function Step1() {
                 </div>
                 <div className="child-row">
                   <div className="field">
-                    <label>Child Name / 儿童姓名</label>
+                    <label>Child Name / 儿童姓名 <span className="required">*</span></label>
                     <input type="text" value={child.name} onChange={(e) => updateChild(i, "name", e.target.value)} />
                   </div>
                   <div className="field">
-                    <label>Child Age / 儿童年龄</label>
+                    <label>Child Age / 儿童年龄 <span className="required">*</span></label>
                     <input type="number" value={child.age} onChange={(e) => updateChild(i, "age", e.target.value)} />
                   </div>
                 </div>
                 <div className="field">
-                  <label>Relationship Type / 关系类型</label>
+                  <label>Relationship Type / 关系类型 <span className="required">*</span></label>
                   <select value={child.relationship} onChange={(e) => updateChild(i, "relationship", e.target.value)}>
                     <option>Select / 选择</option>
                     <option>Mother</option>
