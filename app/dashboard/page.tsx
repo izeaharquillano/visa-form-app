@@ -287,89 +287,9 @@ export default function DashboardPage() {
             </button>
           </div>
 
-          <div className="dashboard-tabs">
-            {TAB_NAMES.map((name, i) => (
-              <button
-                key={name}
-                className={`dashboard-tab${i === activeTab ? " active" : ""}`}
-                onClick={() => setActiveTab(i)}
-              >
-                {name}
-              </button>
-            ))}
-          </div>
-
-          <div className="dashboard-table-wrap">
-            <table className="dashboard-table">
-              <thead>
-                <tr>
-                  {config.columns.map((col) => (
-                    <th key={col.key}>{col.label}</th>
-                  ))}
-                  <th style={{ width: 120 }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading && (
-                  <tr>
-                    <td colSpan={config.columns.length + 1} style={{ textAlign: "center", color: "#666", padding: 20 }}>
-                      Loading...
-                    </td>
-                  </tr>
-                )}
-                {!loading && data.length === 0 && (
-                  <tr>
-                    <td colSpan={config.columns.length + 1} style={{ textAlign: "center", color: "#666", padding: 20 }}>
-                      No rows yet. Add one below.
-                    </td>
-                  </tr>
-                )}
-                {!loading && data.map((row) => {
-                  const rowKey = cellValue(row[config.pk]);
-                  const editing = editingId === rowKey;
-                  return (
-                    <tr key={rowKey}>
-                      {config.columns.map((col) => (
-                        <td key={col.key}>
-                          {editing && col.key !== config.pk ? (
-                            renderCell(col, editRow[col.key], (v) =>
-                              setEditRow((prev: any) => ({ ...prev, [col.key]: v }))
-                            )
-                          ) : (
-                            cellValue(row[col.key])
-                          )}
-                        </td>
-                      ))}
-                      <td>
-                        <div className="dashboard-actions">
-                          {editing ? (
-                            <>
-                              <button className="dashboard-save-btn" onClick={saveEdit}>
-                                Save
-                              </button>
-                              <button className="dashboard-cancel-btn" onClick={cancelEdit}>
-                                Cancel
-                              </button>
-                            </>
-                          ) : (
-                            <>
-                              <button className="dashboard-edit-btn" onClick={() => startEdit(row)}>
-                                Edit
-                              </button>
-                              <button className="dashboard-delete-btn" onClick={() => deleteRow(row)}>
-                                ✕
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-
-            <div className="dashboard-add-row">
+          <div className="dashboard-content">
+            <div className="dashboard-add-sidebar">
+              <p className="sidebar-title">Add New Row</p>
               {config.columns
                 .filter((col) => col.key !== config.pk)
                 .map((col) => (
@@ -402,6 +322,91 @@ export default function DashboardPage() {
               <button className="dashboard-add-btn" onClick={addRow}>
                 + Add Row
               </button>
+            </div>
+
+            <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+              <div className="dashboard-tabs">
+                {TAB_NAMES.map((name, i) => (
+                  <button
+                    key={name}
+                    className={`dashboard-tab${i === activeTab ? " active" : ""}`}
+                    onClick={() => setActiveTab(i)}
+                  >
+                    {name}
+                  </button>
+                ))}
+              </div>
+
+              <div className="dashboard-table-wrap">
+                <table className="dashboard-table">
+                  <thead>
+                    <tr>
+                      {config.columns.map((col) => (
+                        <th key={col.key}>{col.label}</th>
+                      ))}
+                      <th style={{ width: 120 }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loading && (
+                      <tr>
+                        <td colSpan={config.columns.length + 1} style={{ textAlign: "center", color: "#666", padding: 20 }}>
+                          Loading...
+                        </td>
+                      </tr>
+                    )}
+                    {!loading && data.length === 0 && (
+                      <tr>
+                        <td colSpan={config.columns.length + 1} style={{ textAlign: "center", color: "#666", padding: 20 }}>
+                          No rows yet.
+                        </td>
+                      </tr>
+                    )}
+                    {!loading && data.map((row) => {
+                      const rowKey = cellValue(row[config.pk]);
+                      const editing = editingId === rowKey;
+                      return (
+                        <tr key={rowKey}>
+                          {config.columns.map((col) => (
+                            <td key={col.key}>
+                              {editing && col.key !== config.pk ? (
+                                renderCell(col, editRow[col.key], (v) =>
+                                  setEditRow((prev: any) => ({ ...prev, [col.key]: v }))
+                                )
+                              ) : (
+                                cellValue(row[col.key])
+                              )}
+                            </td>
+                          ))}
+                          <td>
+                            <div className="dashboard-actions">
+                              {editing ? (
+                                <>
+                                  <button className="dashboard-save-btn" onClick={saveEdit}>
+                                    Save
+                                  </button>
+                                  <button className="dashboard-cancel-btn" onClick={cancelEdit}>
+                                    Cancel
+                                  </button>
+                                </>
+                              ) : (
+                                <>
+                                  <button className="dashboard-edit-btn" onClick={() => startEdit(row)}>
+                                    Edit
+                                  </button>
+                                  <button className="dashboard-delete-btn" onClick={() => deleteRow(row)}>
+                                    ✕
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
