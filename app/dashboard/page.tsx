@@ -18,6 +18,7 @@ const TAB_NAMES = [
   "Applicant Information",
   "Passport Information",
   "Children",
+  "Parent-Child Relationship",
   "Sponsor Information",
   "Application Information",
   "Visa History",
@@ -68,6 +69,17 @@ const tableConfigs: Record<string, TableConfig> = {
     ],
     dbToLocal: { child_id: "child_id", child_name: "child_name", child_age: "child_age" },
     localToDb: { child_id: "child_id", child_name: "child_name", child_age: "child_age" },
+  },
+  "Parent-Child Relationship": {
+    table: "parent_child_relationship_t",
+    pk: "child_id",
+    columns: [
+      { key: "child_id", label: "Child ID", type: "number", db: "child_id" },
+      { key: "applicant_id", label: "Applicant ID", type: "number", db: "applicant_id" },
+      { key: "relationship_type", label: "Relationship Type", type: "select", options: ["Mother", "Father"], db: "relationship_type" },
+    ],
+    dbToLocal: { child_id: "child_id", applicant_id: "applicant_id", relationship_type: "relationship_type" },
+    localToDb: { child_id: "child_id", applicant_id: "applicant_id", relationship_type: "relationship_type" },
   },
   "Sponsor Information": {
     table: "sponsor_information_t",
