@@ -303,7 +303,7 @@ export default function DashboardPage() {
             <div className="dashboard-add-sidebar">
               <p className="sidebar-title">Add New Row</p>
               {config.columns
-                .filter((col) => col.key !== config.pk)
+                .filter((col) => tabName === "Parent-Child Relationship" || col.key !== config.pk)
                 .map((col) => (
                   <div key={col.key}>
                     {col.type === "select" ? (
@@ -381,7 +381,7 @@ export default function DashboardPage() {
                         <tr key={rowKey}>
                           {config.columns.map((col) => (
                             <td key={col.key}>
-                              {editing && col.key !== config.pk ? (
+                              {editing && (col.key !== config.pk || tabName === "Parent-Child Relationship") ? (
                                 renderCell(col, editRow[col.key], (v) =>
                                   setEditRow((prev: any) => ({ ...prev, [col.key]: v }))
                                 )
